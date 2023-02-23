@@ -22,8 +22,12 @@
     </header>
 
     <h3 class="title"><a>Prašymų Sąrašas</a><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
-      <a> | </a><a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a></h3>
- 
+      {% if current_user.vadovas == 1 %}
+      <a> | </a>
+      <a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a>
+      {% endif %}
+    </h3>
+
 {% extends "base.html" %}
 
 {% block content %}

@@ -22,7 +22,11 @@
     </header>
 
     <h3 class="title"><a href="{{url_for('dashboard')}}">Visi Prašymai</a><a> | </a><a>Mano Prašymai</a>
-      <a> | </a><a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a></h3>
+      {% if current_user.vadovas == 1 %}
+      <a> | </a>
+      <a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a>
+      {% endif %}
+    </h3>
 
 {% extends "base.html" %}
 

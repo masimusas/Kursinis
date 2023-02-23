@@ -7,13 +7,13 @@ from flask_bcrypt import Bcrypt
 import registerform
 import loginform
 import vacationform
-from flask_admin import Admin  # type: ignore
-from flask_admin.contrib.sqla import ModelView  # type: ignore
+from flask_admin import Admin 
+from flask_admin.contrib.sqla import ModelView
 from docxtpl import DocxTemplate
 from datetime import date, datetime
 from flask_mail import Message, Mail
 import secret_things
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer  # type: ignore
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import passwordresetform
 import docx2pdf
 
@@ -74,6 +74,7 @@ class User(db.Model, UserMixin):  # type: ignore
     password = db.Column(db.String(254), nullable=False)
     pavaldinys = db.Column(db.Integer, nullable=False)
     admin = db.Column(db.Boolean, nullable=False)
+    vadovas = db.Column(db.Boolean, nullable=False)
     vacations = db.relationship('Vacations', backref='user')
 
 
@@ -120,12 +121,6 @@ mail = Mail(app)
 
 with app.app_context():
     db.create_all()
-
-
-
-
-
-
 
 
     @staticmethod
@@ -204,11 +199,11 @@ def vacation_request():
             doc.save(os.path.join(
                 basedir, (f'/GIT/Python_kursas/Modal_05_baigiamasis_patvirtinimas/Doc_output/{new_vacation.id}_{name}{surname}.docx')))
 
-            send_vacations_email(new_vacation.id)
+            # send_vacations_email(new_vacation.id)
             
 
             flash('Sėkmingai užregstravote atostogų prašymą.', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('my_vacations'))
         return render_template('vacation_request.html', form=form)
 
 
@@ -367,7 +362,7 @@ def register():
         surname = form.surname.data
         email = form.email.data
         department = form.department.data
-        new_user = User(name=name, surname=surname, email=email, department=department, password=hashed_password, pavaldinys=1, admin=False)
+        new_user = User(name=name, surname=surname, email=email, department=department, password=hashed_password, pavaldinys=1, admin=False, vadovas=False)
         db.session.add(new_user)
         db.session.commit()
         flash('Sėkmingai prisiregistravote! Galite prisijungti', 'success')

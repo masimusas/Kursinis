@@ -16,7 +16,7 @@ def utility_password_check(password):
     return password_ok
 
 class RegisterForm(FlaskForm):
-    name = StringField(validators=[InputRequired(),Length(min=4, max=25)], render_kw={"placeholder": "Vardas"})
+    name = StringField(validators=[InputRequired(),Length(min=3, max=25)], render_kw={"placeholder": "Vardas"})
     surname = StringField(validators=[InputRequired(),Length(min=4, max=25)], render_kw={"placeholder": "Pavardė"})
     email = EmailField(validators=[Email()], render_kw={
                        "placeholder": "Elektroninis paštas"})
