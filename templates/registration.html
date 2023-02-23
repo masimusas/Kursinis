@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <title>Register</title>
+</head>
+
+<body>
+    <header>
+        <p> {% include 'top.html' %}</p>
+    </header>
+    <h1>Register Page!</h1>
+
+    <form  method="POST" action="">
+            <hr style="color: white;">
+    <div class="flex_container1">
+        <div class="simple-modal" tabindex="0">
+            <div class="simple-modal__content">
+                <header>
+                    <h4 class="modal_title">Registracija<span class="modal_close" >
+                        <!-- <button>close</button></span> -->
+                    </h4>
+                </header>
+                      <p>
+            </div>
+                <div class="box3">{{ form.hidden_tag() }}</div>
+                <div class="box3">{{ form.username }}</div>
+                <div class="box3">{{ form.surname }}</div>
+                <div class="box3">{{ form.email }}</div>
+                <div class="box3">{{ form.department }}</div>
+                <div class="box3">{{ form.password }}</div>
+                <div class="box3">{{ form.confirm }}</div>
+                <div class="box3">{{ form.submit }}</div>
+                <button class="modal_login" href="{{ url_for('login') }}"> Turite paskyrą, <br> prisijunkite čia...</button>
+                <br>
+            </div>
+            </p>
+        </div>
+  
+
+    </form>
+
+    
+</body>
+
+</html>

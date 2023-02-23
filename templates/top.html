@@ -1,0 +1,37 @@
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <title>Document</title>
+</head>
+<header>
+    <div class="topnav" class="app">
+        {% if current_user.is_authenticated %}
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('logout')}}">Atsijungti</a>
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('vacation_request')}}">Prašymai</a>
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('dashboard')}}">Sąrašai</a>
+        
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('account')}}">{{ current_user.name }}</a>
+        {% else %}
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('register')}}">Registruotis</a>
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('login')}}">Prisijungti</a>
+        <a class="split" class="nav-item" class="nav-link" href="{{url_for('reset_password')}}">Atkurti Paskyrą</a>
+                   
+        {% endif %}
+        <img class="img" class="split" src="{{ url_for('static', filename='logo/logo_gr_300x89.png') }}" alt="">
+    </div>
+    <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class='alert alert-{{ category }}'>
+                            {{ message }}
+                        </div>
+                    {% endfor%}
+                {% endif %}
+            {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</header>

@@ -1,0 +1,7 @@
+1. Projekto idėja pagrindinių prašymų (atostogų, komandiruočių, išlaidų) generavimas ir patvirtinimas elektroniniu būdu.
+2. Projektą kuriu ant Flask platformos su docxtpl ir docx2pdf iš tų kurių nenaudojome mokymuose.
+3. Dabar kiek užstrigęs su laiško siuntimu kuriame būtų du token: patvirtinti ir atmesti prašymą.
+4. Manau visą projektą reikės perdayti su bootsrtap, 
+	viršutinį meniu padaryti susitraukianti patogesnį mobiliems įrenginiams, 
+	app failą reikia padalinti į route.py ir gal dar kokius, kad sumažinti,
+	šis projektas bus naudojamas internete ar tikrai SQLite yra saugus šiuo atveju? 

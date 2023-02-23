@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+	  <script type='text/javascript'>$(function(){$('.input-daterange').datepicker({autoclose: true});});</script>
+
+
+	<title>Dashboard</title>
+
+
+</head>
+
+<body>
+
+    <header>
+        <p> {% include 'top.html' %}</p>
+    </header>
+
+    <h3 class="title"><a>Prašymų Sąrašas</a><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
+      <a> | </a><a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a></h3>
+ 
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<table id="data" class="table table-striped">
+    <thead>
+  <tr>
+    <th>Prašymo numeris</th>
+    <th>Darbuotojo Vardas Pavardė</th>
+    <th>Vadovo Vardas Pavardė</th>
+    <th>Atostogų data nuo - iki</th>
+    <th>Atostogų Tipas</th>
+    <th>Prašmo Data</th>
+    <th>Patvirtintas</th>
+  </tr>
+  </thead>
+  <tbody>
+   {% if all_vacations %}
+{% for vacation in all_vacations %}
+  <tr>
+    <td>{{vacation.id}}</td>
+    <td>{{vacation.name}} {{vacation.surname}}</td>
+    <td>{{vacation.mname}} {{vacation.msurname}}</td>
+    <td>{{vacation.datefrom}} - {{vacation.dateto}}</td>
+    <td>{{vacation.typevacation.title}}</td>
+    <td>{{vacation.creation_date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+    <td>{{vacation.approved}}</td>
+  </tr>
+  {% endfor %}
+{% endif %}
+</tbody>
+</table>
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    $('#data').DataTable({
+      order: [[5, 'desc']]
+  });
+  });
+</script>
+{% endblock %}
+</body>
+</html>
+
+
