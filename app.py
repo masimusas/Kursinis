@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 import registerform
 import loginform
 import vacationform
+import accountform
 from flask_admin import Admin 
 from flask_admin.contrib.sqla import ModelView
 from docxtpl import DocxTemplate
@@ -291,7 +292,6 @@ def confirm_vacation(id):
 
     # docx file path
     word_file = replace_name+'.docx'
-    
 
     # pdf file path (output)
     pdf_file = replace_name+'.pdf'
@@ -342,9 +342,21 @@ def logout():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    manager = User.query.filter_by(
-        id=(current_user.pavaldinys)).first()
-    return render_template('account.html', manager=manager)
+    form = accountform.AccountForm()
+    if form.validate_on_submit():        
+        current_user.name = form.name.data
+        current_user.surname = form.surname.data
+        current_user.email = form.email.data
+        current_user.department = form.department.data
+        db.session.commit()
+        flash("Tavo paskyra atnaujinta", 'success')
+        return redirect(url_for('account'))
+    form.name.data = current_user.name  # type: ignore
+    form.surname.data = current_user.surname  # type: ignore
+    form.email.data = current_user.email  # type: ignore
+    form.department.data = current_user.department
+    return render_template('account.html', form=form)
+
 
 @ app.route('/register', methods=['GET', 'POST'])
 def register():

@@ -53,7 +53,27 @@
 <script>
   $(document).ready(function () {
     $('#data').DataTable({
-      "order": [[ 7, 'asc' ], [ 5, 'desc' ]]
+      "order": [[ 7, 'asc' ], [ 5, 'desc' ]],
+      language: {
+            lengthMenu: 'Rodoma _MENU_ puslapyje',
+            zeroRecords: 'Labai gaila, bet nieko neradome',
+            info: 'Rodomas puslapis _PAGE_ iš _PAGES_',
+            infoEmpty: 'No records available',
+            infoFiltered: '(išfiltruota iš _MAX_ įrašų)',
+            decimal:        "",
+            emptyTable:     "Lentelėje nėra duomenų",
+            infoPostFix:    "",
+            thousands:      "",
+            loadingRecords: "Įkeliama...",
+            processing:     "",
+            search:         "Ieškoti:",
+            paginate: {
+                first:      "Pirmas",
+                last:       "Paskutinis",
+                next:       "Kitas",
+                previous:   "Ankstesnis"
+            }
+        }
   });
   });
 </script>
