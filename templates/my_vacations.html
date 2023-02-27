@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
-	<script type='text/javascript'>$(function(){$('.input-daterange').datepicker({autoclose: true});});</script>
+{% block content %}
 
-
-	<title>Dashboard</title>
-
-
-</head>
-
-<body>
-
-    <header>
-        <p> {% include 'top.html' %}</p>
-    </header>
-
-    <h3 class="title"><a href="{{url_for('dashboard')}}">Visi Prašymai</a><a> | </a><a>Mano Prašymai</a>
+    <h3 class="title"><a href="{{url_for('dashboard')}}">Visi Prašymai</a><a> | </a><b>Mano Prašymai</b>
       {% if current_user.vadovas == 1 %}
       <a> | </a>
       <a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a>
       {% endif %}
     </h3>
 
-{% extends "base.html" %}
 
-{% block content %}
 <table id="data" class="table table-striped">
     <thead>
   <tr>
@@ -69,7 +48,6 @@
     });
   </script>
 {% endblock %}
-</body>
-</html>
+
 
 

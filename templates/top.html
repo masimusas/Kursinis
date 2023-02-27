@@ -3,39 +3,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet"> -->
-<!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet"> -->
-<!-- <link href="horizontal-nav-mobile.css" rel="stylesheet"> -->
-<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script> -->
-<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script> -->
-
     <title>NorDan</title>
 </head>
 <header>
-    <div class="topnav" class="app">
+    <div class="topnav app">
         {% if current_user.is_authenticated %}
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('logout')}}">Atsijungti</a>
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('vacation_request')}}">Prašymai</a>
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('dashboard')}}">Sąrašai</a>
-        
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('account')}}">{{ current_user.name }}</a>
+        <a class="split menu"  href="{{url_for('logout')}}">Atsijungti</a>
+        <a class="split menu" href="{{url_for('vacation_request')}}">Prašymai</a>
+        <a class="split menu" href="{{url_for('dashboard')}}">Sąrašai</a>
+        <a class="split menu" href="{{url_for('account')}}">{{ current_user.name }}</a>
         {% else %}
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('register')}}">Registruotis</a>
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('login')}}">Prisijungti</a>
-        <a class="split menu" class="nav-item" class="nav-link" href="{{url_for('reset_password')}}">Atkurti Paskyrą</a>
-                   
+        <a class="split menu" href="{{url_for('register')}}">Registruotis</a>
+        <a class="split menu" href="{{url_for('login')}}">Prisijungti</a>
+        <a class="split menu" href="{{url_for('reset_password')}}">Atkurti Paskyrą</a>         
         {% endif %}
         <img class="img" class="split" src="{{ url_for('static', filename='logo/logo_gr_300x89.png') }}" alt="">
-        <select class="split dropdown" class="nav-item" class="nav-link" id="sectional_nav" onchange="window.location.href=this.value">
-            <option class="split dropdown" value="0">Navigate to...</option>
+        <select class="split dropdown dropmenu" id="sectional_nav" onchange="window.location.href=this.value">
+            {% if current_user.is_authenticated %}
+            <option class="split dropdown" value="0">Eiti į...</option>
             <option class="split dropdown" value="{{url_for('logout')}}">Atsijungti</option>
             <option class="split dropdown" value="{{url_for('vacation_request')}}">Prašymai</option>
-            <option class="split dropdown" value="{{url_for('account')}}">Sąrašai</option>
+            <option class="split dropdown" value="{{url_for('dashboard')}}">Sąrašai</option>
             <option class="split dropdown" value="{{url_for('account')}}">{{ current_user.name }}</option>
+            {% else %}
             <option class="split dropdown" value="{{url_for('register')}}">Registruotis</option>
             <option class="split dropdown" value="{{url_for('login')}}">Prisijungti</option>
             <option class="split dropdown" value="{{url_for('reset_password')}}">Atkurti Paskyrą</option>
+            {% endif %}
         </select>       
     </div>
     <div class="container">

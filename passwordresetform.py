@@ -1,17 +1,14 @@
 from flask_wtf import FlaskForm
-# from app import User
 import app
 import re
 from wtforms.validators import DataRequired, ValidationError, EqualTo, Email
-from wtforms import SubmitField, BooleanField, StringField, PasswordField, TextAreaField, EmailField
+from wtforms import SubmitField, StringField, PasswordField, EmailField
 from flask_login import current_user
-from flask_wtf.file import FileField, FileAllowed
 
 
 class UzklausosAtnaujinimoForma(FlaskForm):
-    email = StringField('El. paštas', validators=[DataRequired(), Email()])
+    email = StringField('El. paštas', validators=[DataRequired(), Email()], render_kw={"placeholder": "Elektroninis paštas..."})
     submit = SubmitField('Gauti')
-
     def validate_email(self, email):
         user = app.User.query.filter_by(email=email.data).first()
         if user is None:
@@ -20,16 +17,6 @@ class UzklausosAtnaujinimoForma(FlaskForm):
 
 
 def utility_password_check(password):
-    """
-    Verify the strength of 'password'
-    Returns a dict indicating the wrong criteria
-    A password is considered strong if:
-        8 characters length or more
-        1 digit or more
-        1 symbol or more
-        1 uppercase letter or more
-        1 lowercase letter or more
-    """
 
     # calculating the length
     length_error = len(password) < 8
@@ -55,7 +42,7 @@ def utility_password_check(password):
 
 class PaskyrosAtnaujinimoForma(FlaskForm):
     name = StringField("Vardas", [DataRequired()])
-    email = EmailField("El.pastas", [DataRequired()])
+    email = EmailField("El.pastas", [DataRequired()], render_kw={"placeholder": "Elektroninis paštas"})
     submit = SubmitField("Atnaujinti")
 
     def validate_name(self, name):
@@ -78,7 +65,7 @@ class PaskyrosAtnaujinimoForma(FlaskForm):
 
 
 class ResetRequestForm(FlaskForm):
-    email = EmailField("El.pastas", [DataRequired()])
+    email = EmailField("El.pastas", [DataRequired()], render_kw={"placeholder": "Elektroninis paštas.."})
     submit = SubmitField("Gauti")
 
     def validate_email(self, email):
@@ -89,7 +76,7 @@ class ResetRequestForm(FlaskForm):
 
 
 class PasswordResetForm(FlaskForm):
-    password = PasswordField("Slaptazodis", [DataRequired()])
+    password = PasswordField("Slaptazodis", [DataRequired()], render_kw={"placeholder": "Naujas slaptažodis"})
     confirm = PasswordField("Pakartokite slaptazodi", [
-                                             EqualTo('password', "Slaptazodis turi but toks pats")])
-    submit = SubmitField("Atnaujinti slaptazodi")
+                                             EqualTo('password', "Slaptazodis turi but toks pats")], render_kw={"placeholder": "Pakartokite slaptažodį"})
+    submit = SubmitField("Atnaujinti slaptažodį")

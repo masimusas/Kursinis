@@ -1,20 +1,30 @@
 .topnav{
   overflow: hidden;
+  max-height: 89px;
   background-color: rgb(52,58,64);
-  min-width: 600px;
+  min-height: 89px;
   width: 100%;
 }
-
-.topnav a, select, option{
+.topnav a{
   float: left;
   color: #f2f2f2;
   text-align: center;
-  padding: 37px 20px;
+  padding: 25px 20px;
   text-decoration: none;
   font-size: 24px;
+  min-height: 89px;
 }
-.dropdown{
+.dropmenu{
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  text-decoration: none;
+  font-size: 24px;
+  min-height: 89px;
+}
+.dropdown, .split{
   background-color: rgb(52,58,64);
+  max-height: 89px;
 }
 .topnav a:hover, option:hover{
   background-color: #ddd;
@@ -24,9 +34,34 @@
   float: right;
 }
 .title{
-  padding-left: 7.5%;
+  /* padding-left: 7.5%; */
   align-self: center;
   flex-direction:column;
+}
+.title b{
+  color: black;
+  background-color: transparent;
+  text-decoration: underline;
+}
+.title a:link {
+  color: rgb(52,58,64);
+  background-color: transparent;
+  text-decoration: none;
+}
+.title a:visited {
+  color: rgb(52,58,64);
+  background-color: transparent;
+  text-decoration: none;
+}
+.title a:hover {
+  color: black;
+  background-color: transparent;
+  text-decoration: underline;
+}
+.title a:active {
+  color: blue;
+  background-color: transparent;
+  text-decoration: none;
 }
 .flex_container1{
     margin-left: 35%;
@@ -35,16 +70,16 @@
     flex-wrap: nowrap;
 }
 .box3{
-    max-width: 400px;
+    max-width: 18rem;
     padding: 0.2rem;
     flex: 0 0 25em;
     justify-content: center;
     display:block;
     padding-left: 1rem;
     padding-right: 1rem;
-    min-width: 10rem;
 }
 .box4{
+  max-width: 18rem;
     padding: 0.2rem;
     flex: 0 0 25em;
     justify-content: center;
@@ -52,12 +87,6 @@
     padding-left: 1rem;
     padding-right: 1rem;
 }
-
-.form-control{
-  min-width: 10rem;
-  max-width: 10rem;
-}
-
 .simple-modal {
 color: white;
   background: rgb(52,58,64);
@@ -75,7 +104,6 @@ font-size: 24px;
 }
 
 .modal_login{
-
   display:block;
   margin: auto;
   min-width: 10rem;
@@ -84,12 +112,12 @@ font-size: 24px;
   background: rgb(182, 101, 101);
 }
 
-@media (min-width: 825px) {
+@media (min-width: 845px) {
   .dropdown {
     display: none;
   }
 }
-@media (max-width: 825px) {
+@media (max-width: 845px) {
   .menu {
     display: none;
   }

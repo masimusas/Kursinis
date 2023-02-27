@@ -10,7 +10,7 @@ import vacationform
 from flask_admin import Admin 
 from flask_admin.contrib.sqla import ModelView
 from docxtpl import DocxTemplate
-from datetime import date, datetime
+from datetime import datetime
 from flask_mail import Message, Mail
 import secret_things
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -30,17 +30,16 @@ db = SQLAlchemy(app)
 
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-# login_manager.login_view = 'prisijungti'    # type: ignore
 login_manager.login_message_category = 'info'
 
 db.init_app(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # type: ignore
+login_manager.login_view = 'login'
 
 
-class TypeVacation(db.Model):  # type: ignore
+class TypeVacation(db.Model):
     __tablename__ = "typevacation"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(250), nullable=False)
@@ -48,7 +47,7 @@ class TypeVacation(db.Model):  # type: ignore
     vacations = db.relationship('Vacations', backref='typevacation')
 
 
-class Vacations(db.Model, UserMixin):  # type: ignore
+class Vacations(db.Model, UserMixin):
     __tablename__ = "vacations"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -205,9 +204,6 @@ def vacation_request():
             flash('Sėkmingai užregstravote atostogų prašymą.', 'success')
             return redirect(url_for('my_vacations'))
         return render_template('vacation_request.html', form=form)
-
-
-
 
 
 @app.route("/reset_password", methods=['GET', 'POST'])

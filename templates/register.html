@@ -1,99 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>Register</title>
-</head>
-
-<body>
-    <header>
-        <p> {% include 'top.html' %}</p>
-    </header>
-
+{% extends "base.html" %}
+{% block content %}
     <form  method="POST" action="">
         {{ form.hidden_tag() }}
     <div class="flex_container1">
         <div class="simple-modal" tabindex="0">
             <div class="simple-modal__content">
                 <header>
-                    <h4 class="modal_title">Registracija<span class="modal_close" >
-                        <!-- <button>close</button></span> -->
-                    </h4>
+                    <br>
+                    <h4 class="modal_title">Registracija<span class="modal_close" ></h4>
+                        <br>
                 </header>
             <p>
             </div>
                 <div class="box3"></div>
                 <div class="box3">{% if form.name.errors %}
-                        {{ form.name(class="form-control form-control-lg is-invalid") }}
+                        {{ form.name(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.name.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                             </div>
                     {% else %}
-                        {{ form.name(class="form-control form-control-lg") }}
+                        {{ form.name(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="box3">{% if form.surname.errors %}
-                        {{ form.surname(class="form-control form-control-lg is-invalid") }}
+                        {{ form.surname(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.surname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                             </div>
                     {% else %}
-                        {{ form.surname(class="form-control form-control-lg") }}
+                        {{ form.surname(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="box3">{% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.email(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.email.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {{ form.email(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="box3">{% if form.department.errors %}
-                        {{ form.department(class="form-control form-control-lg is-invalid") }}
+                        {{ form.department(class="form-control  is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.department.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.department(class="form-control form-control-lg") }}
+                        {{ form.department(class="form-select form-select-sm") }}
                     {% endif %}
                 </div>
                 <div class="box3">{% if form.password.errors %}
-                        {{ form.password(class="form-control form-control-lg is-invalid") }}
+                        {{ form.password(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.password.errors %}
                                 <div>{{ error }}</div>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.password(class="form-control form-control-lg") }}
+                        {{ form.password(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="box3">{% if form.confirm.errors %}
-                        {{ form.confirm(class="form-control form-control-lg is-invalid") }}
+                        {{ form.confirm(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.confirm.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.confirm(class="form-control form-control-lg") }}
+                        {{ form.confirm(class="form-control") }}
                     {% endif %}
                 </div>
-                <div class="box3">{{ form.submit }}</div>
+                <div class="box3">{{ form.submit(class="form-control") }}</div>
+                <br>
                 <br>
             </div>
             </p>
@@ -101,8 +88,4 @@
   
 
     </form>
-
-    
-</body>
-
-</html>
+{% endblock content %}
