@@ -15,3 +15,5 @@ class VacationForm(FlaskForm):
     type = QuerySelectField(query_factory=type_query, allow_blank=False, get_label="title")
     submit = SubmitField('Pateikti')
 
+class AtmemestaForm(FlaskForm):
+    submit = SubmitField('Pateikti')

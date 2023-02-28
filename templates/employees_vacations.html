@@ -3,7 +3,11 @@
 {% block content %}
 
     <h3 class="title"><a href="{{url_for('dashboard')}}">Visi Prašymai</a><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
-      <a> | </a><b>Pavaldinių Prašymai</b></h3>
+      {% if current_user.vadovas == 1 %}
+      <a> | </a>
+      <b href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</b>
+      {% endif %}
+    </h3>
     
 
 
@@ -33,14 +37,14 @@
     <td>{{vacation.typeapprove.title}}</td>
     <td>
     {% if vacation.approved == None %}
-    <form action="{{ url_for('confirm_vacation', id=vacation.id) }}">
-      <button type="submit"> Patvirtinti</button>
+    <form method="post" action="{{ url_for('confirm_vacation', id=vacation.id) }}">
+      <input type="submit" value="Patvirtinti" name="confirm_vacation_click"></input>
     </form>
-    <form action="{{ url_for('reject_vacation', id=vacation.id) }}">
-      <button type="submit"> Atmesti</button>
+    <form method="post" action="{{ url_for('reject_vacation', id=vacation.id) }}">
+      <input type="submit" value="Atmesti" name="reject_vacation_click"></input>
     </form>
     {% else %}
-    <p>pasirinkimas atliktas</p>
+    <p>Pasirinkimas atliktas</p>
     {% endif %}
   </td>
   </tr>

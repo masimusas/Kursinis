@@ -3,7 +3,7 @@
 
 {% block content %}
 
-    <h3 class="title"><b>Prašymų Sąrašas</b><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
+    <h3 class="title"><b>Visi Prašymai</b><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
       {% if current_user.vadovas == 1 %}
       <a> | </a>
       <a href="{{url_for('employees_vacations')}}">Pavaldinių Prašymai</a>

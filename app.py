@@ -171,7 +171,7 @@ def send_vacations_email(vacations):
     msg = Message("Atostogų patvirtinimo užklausa",
                   sender="spam.marsimus@gmail.com", recipients=[manager.email])
     msg.body = f"""Norėdami patvirtinti atostogų prašymą paspauskite šią nuorodą:
-    {{ { url_for('approve_token', token=token, _external=True) } }}"""
+    { url_for('approve_token', token=token, _external=True) }"""
     mail.send(msg)
 
 
@@ -297,8 +297,10 @@ def approve_token(token):
 @login_required
 def approve_vacation(id):
     approve_vacation = Vacations.query.get(id)
-    return render_template("approve_vacation.html", vacation=approve_vacation)
-
+    if current_user.id == approve_vacation.mid:
+        return render_template("approve_vacation.html", vacation=approve_vacation)
+    else:
+        return render_template("my_vacations.html")
 
 
 
@@ -345,37 +347,62 @@ def employees_vacations():
 @login_required
 def confirm_vacation(id):
     vacation = Vacations.query.get(id)
-    vacation.approved = 1
-    vacation.status_date = datetime.now()
-    db.session.commit()
-
-
-    file_name = (os.path.join(
-        basedir, (f'/GIT/Python_kursas/Modal_05_baigiamasis_patvirtinimas/Doc_output/{vacation.id}_{vacation.name}{vacation.surname}')))
-    replace_name = file_name.replace("/", "\\")
-
-    word_file = replace_name+'.docx'
-    pdf_file = replace_name+'.pdf'
-
-    docx2pdf.convert(word_file, pdf_file, pythoncom.CoInitialize())
-    send_vacations_approve_email(vacation)
-    employees_vacations = Vacations.query.filter_by(mid=current_user.id)
-    flash('Patvirtinote atostogų prašymą', 'info')
-    return render_template("employees_vacations.html", employees_vacations=employees_vacations)
-
+    if request.form.get('confirm_vacation_click') == 'Patvirtinti' and current_user.id == vacation.mid and vacation.approved != 0 and vacation.approved != 1:
+        vacation.approved = 1
+        vacation.status_date = datetime.now()
+        db.session.commit()
+        file_name = (os.path.join(
+            basedir, (f'/GIT/Python_kursas/Modal_05_baigiamasis_patvirtinimas/Doc_output/{vacation.id}_{vacation.name}{vacation.surname}')))
+        replace_name = file_name.replace("/", "\\")
+        word_file = replace_name+'.docx'
+        pdf_file = replace_name+'.pdf'
+        docx2pdf.convert(word_file, pdf_file, pythoncom.CoInitialize())
+        send_vacations_approve_email(vacation)
+        employees_vacations = Vacations.query.filter_by(mid=current_user.id)
+        flash('Patvirtinote atostogų prašymą', 'info')
+        return render_template("employees_vacations.html", employees_vacations=employees_vacations)
+    else:
+        return render_template("my_vacations.html")
+    
 # Atostogų atmetimo funkcija
 
 @app.route("/atmestos_atostogos/<id>", methods=['GET', 'POST'])
 @login_required
 def reject_vacation(id):
     vacation = Vacations.query.get(id)
-    vacation.approved = 0
-    vacation.status_date = datetime.now()
-    db.session.commit()
-    send_vacations_reject_email(vacation)
-    employees_vacations = Vacations.query.filter_by(mid=current_user.id)
-    flash('Atmetėte atostogų prašymą', 'warning')
-    return render_template("employees_vacations.html", employees_vacations=employees_vacations)
+    if request.form.get('reject_vacation_click') == 'Atmesti' and current_user.id == vacation.mid and vacation.approved != 0 and vacation.approved != 1:
+        vacation.approved = 0
+        vacation.status_date = datetime.now()
+        db.session.commit()
+        send_vacations_reject_email(vacation)
+        employees_vacations = Vacations.query.filter_by(mid=current_user.id)
+        flash('Atmetėte atostogų prašymą', 'warning')
+        return render_template("employees_vacations.html", employees_vacations=employees_vacations)
+    else:
+        return render_template("my_vacations.html")
+
+# @app.route("/atmestos_atostogos/<id>", methods=['GET', 'POST'])
+# @login_required
+# def reject_vacation(id):
+#     if request.method == 'POST':
+#         if (request.form.get('confirm_vacation_click') == 'Patvirtinti',
+#             current_user.id == vacation.mid):
+#                 vacation = Vacations.query.get(id)
+#                 vacation.approved = 0
+#                 vacation.status_date = datetime.now()
+#                 db.session.commit()
+#                 send_vacations_reject_email(vacation)
+#                 employees_vacations = Vacations.query.filter_by(mid=current_user.id)
+#                 flash('Atmetėte atostogų prašymą', 'warning')
+#                 return render_template("employees_vacations.html", employees_vacations=employees_vacations)
+#         elif current_user.vadovas == True:
+#             return render_template("employees_vacations.html")
+
+#         else:
+#                 return render_template("my_vacations.html")
+#     else:
+#                 return render_template("my_vacations.html")
+
 
 # Virštinė juosta
 
