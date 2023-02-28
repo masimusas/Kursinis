@@ -1,3 +1,16 @@
+docx==0.2.4
+docx2pdf==0.1.8
+docxtpl==0.16.4
 Flask==2.2.2
-WTForms==3.0.1
+Flask_Admin==1.6.0
+Flask_Bcrypt==1.0.1
+Flask_Login==0.6.2
+Flask_Mail==0.9.1
+flask_sqlalchemy==3.0.3
+Flask_WTF==1.0.1
 itsdangerous==2.0.0
+Jinja2==3.1.2
+python_docx==0.8.11
+pywin32==304
+WTForms==3.0.1
+WTForms_SQLAlchemy==0.3

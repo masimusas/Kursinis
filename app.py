@@ -128,7 +128,7 @@ def send_reset_email(user):
     msg = Message("Slaptazodzio atnaujinimo uzklausa",
                   sender="spam.marsimus@gmail.com", recipients=[user.email])
     msg.body = f"""Norėdami pakeisti slaptažodį paspauskite šią nuorodą:
-    {{{ url_for('reset_token', token=token, _external=True) }}}
+    { url_for('reset_token', token=token, _external=True) }
     Jei jus nesiuntėte prašymo pakeisti slaptažodį, nieko nedarykite"""
     mail.send(msg)
 
@@ -381,27 +381,6 @@ def reject_vacation(id):
     else:
         return render_template("my_vacations.html")
 
-# @app.route("/atmestos_atostogos/<id>", methods=['GET', 'POST'])
-# @login_required
-# def reject_vacation(id):
-#     if request.method == 'POST':
-#         if (request.form.get('confirm_vacation_click') == 'Patvirtinti',
-#             current_user.id == vacation.mid):
-#                 vacation = Vacations.query.get(id)
-#                 vacation.approved = 0
-#                 vacation.status_date = datetime.now()
-#                 db.session.commit()
-#                 send_vacations_reject_email(vacation)
-#                 employees_vacations = Vacations.query.filter_by(mid=current_user.id)
-#                 flash('Atmetėte atostogų prašymą', 'warning')
-#                 return render_template("employees_vacations.html", employees_vacations=employees_vacations)
-#         elif current_user.vadovas == True:
-#             return render_template("employees_vacations.html")
-
-#         else:
-#                 return render_template("my_vacations.html")
-#     else:
-#                 return render_template("my_vacations.html")
 
 
 # Virštinė juosta
