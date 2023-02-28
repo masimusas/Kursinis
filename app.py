@@ -48,6 +48,16 @@ class TypeVacation(db.Model):
     vacations = db.relationship('Vacations', backref='typevacation')
 
 
+class TypeApprove(db.Model):
+    __tablename__ = "typeapprove"
+    id = db.Column(db.Integer, primary_key=True)
+    appruvetype =  db.Column(db.Boolean)
+    title = db.Column(db.String(250), nullable=False)
+    description = db.Column(db.String(250), nullable=False)
+    vacations = db.relationship('Vacations', backref='typeapprove')
+
+
+
 class Vacations(db.Model, UserMixin):
     __tablename__ = "vacations"
     id = db.Column(db.Integer, primary_key=True)
@@ -59,10 +69,26 @@ class Vacations(db.Model, UserMixin):
     msurname = db.Column(db.String(60), nullable=False)
     datefrom = db.Column(db.Date, nullable=False)
     dateto = db.Column(db.Date, nullable=False)
-    approved = db.Column(db.Boolean, nullable=True)
+    approved = db.Column(db.Boolean, db.ForeignKey('typeapprove.appruvetype'))
     type = db.Column(db.Integer, db.ForeignKey('typevacation.id'))
     creation_date = db.Column(db.DateTime)
     status_date = db.Column(db.DateTime)
+
+    @staticmethod
+    def get_approve_token(vacations, expires_sec=1209600):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'vacations_id': vacations.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_approve_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            vacations_id = s.loads(token)['vacations_id']
+        except:
+            return None
+        return Vacations.query.get(vacations_id)
+
+
 
 class User(db.Model, UserMixin):  # type: ignore
     __tablename__ = "user"
@@ -77,6 +103,8 @@ class User(db.Model, UserMixin):  # type: ignore
     vadovas = db.Column(db.Boolean, nullable=False)
     vacations = db.relationship('Vacations', backref='user')
 
+
+# Slaptažodžio atkūrimo siuntimas
 
     @staticmethod
     def get_reset_token(user, expires_sec=1800):
@@ -94,14 +122,58 @@ class User(db.Model, UserMixin):  # type: ignore
         return User.query.get(user_id)
 
 
+
 def send_reset_email(user):
     token = User.get_reset_token(user)
     msg = Message("Slaptazodzio atnaujinimo uzklausa",
                   sender="spam.marsimus@gmail.com", recipients=[user.email])
-    msg.body = f'''Noredami pakeisti slaptazodi paspauskite nuoroda:
+    msg.body = f"""Norėdami pakeisti slaptažodį paspauskite šią nuorodą:
     {{{ url_for('reset_token', token=token, _external=True) }}}
-    Jei jus nesiuntet prasymo pakeisti slaptazodi, nieko nedarykite'''
+    Jei jus nesiuntėte prašymo pakeisti slaptažodį, nieko nedarykite"""
     mail.send(msg)
+
+
+# Atostogų patvirtinimo siuntimas
+
+def send_vacations_approve_email(vacations):
+    token = Vacations.get_approve_token(vacations)
+    employee = User.query.filter_by(id=vacations.user_id).first()
+    msg = Message("Atostogų patvirtinimo uzklausa",
+                  sender="spam.marsimus@gmail.com", recipients=[employee.email])
+    msg.body = f"""Jūsų atostogos patvirtintos:
+    Prašymo nr.:             {vacations.id} 
+    Vadovas:                 {vacations.mname} {vacations.msurname}
+    Atostogų data nuo - iki: {vacations.datefrom} - {vacations.dateto}
+    Atostogų Tipas:          {vacations.typevacation.title}
+    Prašymo Data             {vacations.creation_date.strftime('%Y-%m-%d %H:%M:%S')}
+    Nuoroda į prašymą: { url_for('approve_token', token=token, _external=True) }"""
+    mail.send(msg)
+
+def send_vacations_reject_email(vacations):
+    token = Vacations.get_approve_token(vacations)
+    employee = User.query.filter_by(id=vacations.user_id).first()
+    msg = Message("Atostogų patvirtinimo uzklausa",
+                  sender="spam.marsimus@gmail.com", recipients=[employee.email])
+    msg.body = f"""Jūsų atostogos atmestos: 
+    Prašymo nr.:             {vacations.id} 
+    Vadovas:                 {vacations.mname} {vacations.msurname}
+    Atostogų data nuo - iki: {vacations.datefrom} - {vacations.dateto}
+    Atostogų Tipas:          {vacations.typevacation.title}
+    Prašymo Data             {vacations.creation_date.strftime('%Y-%m-%d %H:%M:%S')}
+    Nuoroda į prašymą: { url_for('approve_token', token=token, _external=True) }"""
+    mail.send(msg)
+
+
+
+def send_vacations_email(vacations):
+    token = Vacations.get_approve_token(vacations)
+    manager = User.query.filter_by(id=current_user.pavaldinys).first()
+    msg = Message("Atostogų patvirtinimo užklausa",
+                  sender="spam.marsimus@gmail.com", recipients=[manager.email])
+    msg.body = f"""Norėdami patvirtinti atostogų prašymą paspauskite šią nuorodą:
+    {{ { url_for('approve_token', token=token, _external=True) } }}"""
+    mail.send(msg)
+
 
 class ManoModelView(ModelView):
     def is_accessible(self):
@@ -121,33 +193,6 @@ mail = Mail(app)
 
 with app.app_context():
     db.create_all()
-
-
-    @staticmethod
-    def get_approve_token(vacations, expires_sec=1209600):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'vacations_id': vacations.id}).decode('utf-8')
-
-
-    @staticmethod
-    def verify_approve_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            vacations_id = s.loads(token)['user_id']
-        except:
-            return None
-        return User.query.get(vacations_id)
-
-
-def send_vacations_email(vacations):
-    token = Vacations.get_approve_token(vacations)
-    manager = User.query.filter_by(id=current_user.pavaldinys).first()
-    msg = Message("Slaptazodzio atnaujinimo uzklausa",
-                  sender="spam.marsimus@gmail.com", recipients=[manager.email])
-    msg.body = f'''Noredami pakeisti slaptazodi paspauskite nuoroda:
-    {{{ url_for('reset_token', token=token, _external=True) }}}
-    Jei jus nesiuntet prasymo pakeisti slaptazodi, nieko nedarykite'''
-    mail.send(msg)
 
 
 @app.route('/vacation_request', methods=['GET', 'POST'])
@@ -199,7 +244,7 @@ def vacation_request():
             doc.save(os.path.join(
                 basedir, (f'/GIT/Python_kursas/Modal_05_baigiamasis_patvirtinimas/Doc_output/{new_vacation.id}_{name}{surname}.docx')))
 
-            # send_vacations_email(new_vacation.id)
+            send_vacations_email(new_vacation)
             
 
             flash('Sėkmingai užregstravote atostogų prašymą.', 'success')
@@ -224,7 +269,7 @@ def reset_password():
 @app.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(url_for("home"))
     user = User.verify_reset_token(token)
     if user is None:
         flash('Uzklausa netinkama arba pasibaigusio galiojimo', 'warning')
@@ -239,6 +284,21 @@ def reset_token(token):
     return render_template('reset_token.html', form=form)
 
 
+@app.route("/approve_token/<token>", methods=['GET', 'POST'])
+def approve_token(token):
+    vacation = Vacations.verify_approve_token(token)
+    if vacation is None:
+        flash('Uzklausa netinkama arba pasibaigusio galiojimo', 'warning')
+        return redirect(url_for('home'))
+    return redirect(url_for('approve_vacation', id=vacation.id))
+
+
+@app.route("/approve_vacation/<id>", methods=['GET', 'POST'])
+@login_required
+def approve_vacation(id):
+    approve_vacation = Vacations.query.get(id)
+    return render_template("approve_vacation.html", vacation=approve_vacation)
+
 
 
 
@@ -246,12 +306,13 @@ def reset_token(token):
 def load_user(id):
     return User.query.get(int(id))
 
-
+# pagrindinis puslapis
 
 @app.route('/')
 def home():
     return render_template('home.html')
 
+# Sąrašai
 
 @app.route('/dashboard')
 @login_required
@@ -273,9 +334,12 @@ def my_vacations():
 @app.route("/employees_vacations", methods=['GET', 'POST'])
 @login_required
 def employees_vacations():
-    employees_vacations = Vacations.query.filter_by( mid=current_user.id)
+    employees_vacations = Vacations.query.filter_by(mid=current_user.id)
     return render_template("employees_vacations.html", employees_vacations=employees_vacations)
 
+
+# Atostogų patvirtinimo funkcija
+# generuojamas pdf failas
 
 @app.route("/patvirtintos_atostogos/<id>", methods=['GET', 'POST'])
 @login_required
@@ -290,17 +354,16 @@ def confirm_vacation(id):
         basedir, (f'/GIT/Python_kursas/Modal_05_baigiamasis_patvirtinimas/Doc_output/{vacation.id}_{vacation.name}{vacation.surname}')))
     replace_name = file_name.replace("/", "\\")
 
-    # docx file path
     word_file = replace_name+'.docx'
-
-    # pdf file path (output)
     pdf_file = replace_name+'.pdf'
 
     docx2pdf.convert(word_file, pdf_file, pythoncom.CoInitialize())
-
+    send_vacations_approve_email(vacation)
     employees_vacations = Vacations.query.filter_by(mid=current_user.id)
+    flash('Patvirtinote atostogų prašymą', 'info')
     return render_template("employees_vacations.html", employees_vacations=employees_vacations)
 
+# Atostogų atmetimo funkcija
 
 @app.route("/atmestos_atostogos/<id>", methods=['GET', 'POST'])
 @login_required
@@ -309,14 +372,18 @@ def reject_vacation(id):
     vacation.approved = 0
     vacation.status_date = datetime.now()
     db.session.commit()
-
+    send_vacations_reject_email(vacation)
     employees_vacations = Vacations.query.filter_by(mid=current_user.id)
+    flash('Atmetėte atostogų prašymą', 'warning')
     return render_template("employees_vacations.html", employees_vacations=employees_vacations)
+
+# Virštinė juosta
 
 @app.route('/top')
 def top():
     return render_template('top.html')
-    
+
+# Prisijungimas    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -333,11 +400,15 @@ def login():
             flash('Prisijungti nepavyko. Patikrinkite el. paštą ir slaptažodį', 'danger')
     return render_template('login.html', form=form)
 
+# Atisijungimas
+
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+# Paskyros informacijos keitimas 
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -357,6 +428,7 @@ def account():
     form.department.data = current_user.department
     return render_template('account.html', form=form)
 
+# Registracija
 
 @ app.route('/register', methods=['GET', 'POST'])
 def register():

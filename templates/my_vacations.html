@@ -32,7 +32,7 @@
     <td>{{vacation.datefrom}} - {{vacation.dateto}}</td>
     <td>{{vacation.typevacation.title}}</td>
     <td>{{vacation.creation_date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
-    <td>{{vacation.approved}}</td>
+    <td>{{vacation.typeapprove.title}}</td>
   </tr>
   {% endfor %}
 {% endif %}
@@ -48,7 +48,7 @@
             lengthMenu: 'Rodoma _MENU_ puslapyje',
             zeroRecords: 'Labai gaila, bet nieko neradome',
             info: 'Rodomas puslapis _PAGE_ iš _PAGES_',
-            infoEmpty: 'No records available',
+            infoEmpty: 'Nėra jokių įrašų',
             infoFiltered: '(išfiltruota iš _MAX_ įrašų)',
             decimal:        "",
             emptyTable:     "Lentelėje nėra duomenų",

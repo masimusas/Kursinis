@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3 class="title"><a href="{{url_for('dashboard')}}">Visi Prašymai</a><a> | </a><a href="{{url_for('my_vacations')}}">Mano Prašymai</a>
+    <a> | </a><b>Pavaldinių Prašymai</b></h3>
+  
+
+
+<table id="data" class="table table-striped">
+  <thead>
+<tr>
+  <th>Prašymo numeris</th>
+  <th>Darbuotojo Vardas Pavardė</th>
+  <th>Vadovo Vardas Pavardė</th>
+  <th>Atostogų data nuo - iki</th>
+  <th>Atostogų Tipas</th>
+  <th>Prašmo Data</th>
+  <th>Patvirtintas</th>
+  <th>veiksmai</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td>{{vacation.id}}</td>
+  <td>{{vacation.name}} {{vacation.surname}}</td>
+  <td>{{vacation.mname}} {{vacation.msurname}}</td>
+  <td>{{vacation.datefrom}} - {{vacation.dateto}}</td>
+  <td>{{vacation.typevacation.title}}</td>
+  <td>{{vacation.creation_date.strftime('%Y-%m-%d %H:%M:%S')}}</td>
+  <td>{{vacation.typeapprove.title}}</td>
+  <td>
+  {% if vacation.approved == None %}
+  <form action="{{ url_for('confirm_vacation', id=vacation.id) }}">
+    <button type="submit"> Patvirtinti</button>
+  </form>
+  <form action="{{ url_for('reject_vacation', id=vacation.id) }}">
+    <button type="submit"> Atmesti</button>
+  </form>
+  {% else %}
+  <p>Pasirinkimas atliktas</p>
+  {% endif %}
+</td>
+</tr>
+
+</tbody>
+</table>
+{% endblock %}
+{% block scripts %}
+<script>
+$(document).ready(function () {
+  $('#data').DataTable({
+    "order": [[ 7, 'asc' ], [ 5, 'desc' ]],
+    language: {
+          lengthMenu: 'Rodoma _MENU_ puslapyje',
+          zeroRecords: 'Labai gaila, bet nieko neradome',
+          info: 'Rodomas puslapis _PAGE_ iš _PAGES_',
+          infoEmpty: 'Nėra jokių įrašų',
+          infoFiltered: '(išfiltruota iš _MAX_ įrašų)',
+          decimal:        "",
+          emptyTable:     "Lentelėje nėra duomenų",
+          infoPostFix:    "",
+          thousands:      "",
+          loadingRecords: "Įkeliama...",
+          processing:     "",
+          search:         "Ieškoti:",
+          paginate: {
+              first:      "Pirmas",
+              last:       "Paskutinis",
+              next:       "Kitas",
+              previous:   "Ankstesnis"
+          }
+      }
+});
+});
+</script>
+{% endblock %}
